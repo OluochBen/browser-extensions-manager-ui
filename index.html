@@ -44,11 +44,31 @@
       --input-bg: #fff;
       --search-border: var(--neutral-200);
       --search-icon: var(--neutral-600);
+      --panel-bg: #e7ecf7;
+      --panel-border: #d5dcea;
+      --panel-text: #1c2740;
+      --card-bg: #f9fbff;
+      --card-border: #dfe4f1;
+      --filter-bg: #e6ebf6;
+      --filter-border: #d5dce9;
+      --filter-hover: #dbe2f2;
+      --extension-bg: #f1f4fb;
+      --extension-border: #d9e0ef;
+      --extension-hover: #cdd7ec;
+      --extension-text: #1c2340;
+      --extension-desc: #4c5978;
+      --switch-track: #dbe1ee;
+      --switch-track-border: #cfd6e8;
+      --switch-knob: #ffffff;
+      --remove-bg: #dfe5f3;
+      --remove-border: #d0d8eb;
+      --remove-hover-bg: #d4ddf0;
+      --remove-hover-border: #c2cee8;
     }
 
     body[data-theme="dark"] {
-      --bg-gradient: radial-gradient(120% 120% at 20% 0%, rgba(64, 98, 180, 0.35) 0%, rgba(8, 12, 26, 0.1) 40%), linear-gradient(180deg, #04091a 0%, #091435 100%);
-      --surface: #0e162c;
+      --bg-gradient: radial-gradient(120% 120% at 20% 0%, rgba(64, 98, 180, 0.3) 0%, rgba(8, 12, 26, 0.1) 40%), linear-gradient(180deg, #061026 0%, #0e1b38 100%);
+      --surface: #0c1329;
       --surface-muted: #111a33;
       --text-primary: var(--neutral-0);
       --text-secondary: var(--neutral-300);
@@ -59,6 +79,26 @@
       --input-bg: #0c1327;
       --search-border: #111b36;
       --search-icon: var(--neutral-200);
+      --panel-bg: #3a4256;
+      --panel-border: #404b65;
+      --panel-text: #f3f5ff;
+      --card-bg: #0c1329;
+      --card-border: #0f1b39;
+      --filter-bg: #101a32;
+      --filter-border: #202b4b;
+      --filter-hover: #202a48;
+      --extension-bg: #2f3c64;
+      --extension-border: #35436b;
+      --extension-hover: #43527a;
+      --extension-text: #f7f9ff;
+      --extension-desc: #d4d9e7;
+      --switch-track: #2a2f3f;
+      --switch-track-border: #2f3648;
+      --switch-knob: #f4f7ff;
+      --remove-bg: #222e4d;
+      --remove-border: #2d395b;
+      --remove-hover-bg: #27355a;
+      --remove-hover-border: #3a4a77;
     }
 
     * {
@@ -96,25 +136,27 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: #1b2442;
-      border: 1px solid #233057;
-      box-shadow: inset 0 -2px 8px rgba(0,0,0,0.25), 0 18px 36px rgba(0,0,0,0.4);
-      gap: 12px;
+      padding: 16px 22px;
+      border-radius: 18px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      box-shadow: none;
+      gap: 16px;
     }
 
     .brand {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 12px;
-      color: #cdd5e6;
+      color: var(--panel-text);
       font-weight: 700;
+      font-size: 23px;
+      letter-spacing: -0.01em;
     }
 
     .brand img {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
     }
 
     .toolbar .spacer {
@@ -122,21 +164,23 @@
     }
 
     .gear-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      border: 1px solid #2b3658;
-      background: #131c34;
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      border: 1px solid var(--panel-border);
+      background: rgba(0,0,0,0.08);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 -2px 6px rgba(0,0,0,0.35);
-      color: #cbd3e6;
+      box-shadow: none;
+      color: #f4f6ff;
     }
 
-    .gear-btn img {
-      width: 18px;
-      height: 18px;
+    .gear-btn img,
+    .gear-btn .gear-icon {
+      width: 22px;
+      height: 22px;
+      filter: brightness(1.05);
     }
 
     .theme-toggle:focus-visible,
@@ -150,9 +194,9 @@
     .card {
       background: var(--surface);
       border-radius: 18px;
-      padding: 22px 20px 26px;
-      border: 1px solid #142040;
-      box-shadow: 0 28px 50px rgba(0, 0, 0, 0.45);
+      padding: 22px 20px 24px;
+      border: 1px solid var(--card-border);
+      box-shadow: none;
     }
 
     .card-top {
@@ -179,11 +223,11 @@
 
     .filters {
       display: inline-flex;
-      background: var(--surface-muted);
+      background: var(--filter-bg);
       border-radius: 999px;
       padding: 4px;
       gap: 6px;
-      border: 1px solid #202b4b;
+      border: 1px solid var(--filter-border);
       box-shadow: inset 0 -2px 6px rgba(0,0,0,0.25);
     }
 
@@ -199,13 +243,13 @@
 
     .filter-btn:hover {
       color: var(--text-primary);
-      background: var(--pill);
+      background: var(--filter-hover);
     }
 
     .filter-btn.is-active {
       background: #ec6b5f;
       color: #fff;
-      box-shadow: 0 12px 20px rgba(236, 107, 95, 0.35);
+      box-shadow: 0 12px 20px rgba(236, 107, 95, 0.35), 0 0 0 6px rgba(236,107,95,0.25);
     }
 
     .card-top + .extensions {
@@ -222,22 +266,22 @@
     }
 
     .extension {
-      background: #243157;
+      background: var(--extension-bg);
       border-radius: 12px;
-      border: 1px solid #2e3b63;
-      padding: 14px 16px;
+      border: 1px solid var(--extension-border);
+      padding: 16px 16px;
       display: flex;
       justify-content: space-between;
       gap: 12px;
       align-items: center;
       transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
-      box-shadow: inset 0 -2px 6px rgba(0,0,0,0.08);
+      box-shadow: none;
     }
 
     .extension:hover {
       transform: translateY(-2px);
-      border-color: var(--pill);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+      border-color: var(--extension-hover);
+      box-shadow: none;
     }
 
     .extension-info {
@@ -275,7 +319,7 @@
     .name {
       font-weight: 700;
       font-size: 16px;
-      color: #eef2ff;
+      color: var(--extension-text);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -283,7 +327,7 @@
 
     .description {
       margin: 0;
-      color: #cbd3e6;
+      color: var(--extension-desc);
       line-height: 1.5;
       font-size: 14px;
       overflow: hidden;
@@ -305,8 +349,8 @@
       width: 58px;
       height: 30px;
       border-radius: 999px;
-      background: #2b344a;
-      border: 1px solid #2f3850;
+      background: var(--switch-track);
+      border: 1px solid var(--switch-track-border);
       transition: background 150ms ease, border-color 150ms ease;
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.35);
     }
@@ -319,8 +363,8 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: #f4f7ff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 -2px 2px rgba(0,0,0,0.08);
+      background: var(--switch-knob);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 -2px 2px rgba(0,0,0,0.1);
       transition: transform 150ms ease, background 150ms ease;
     }
 
@@ -343,17 +387,17 @@
     .remove-btn {
       padding: 8px 12px;
       border-radius: 10px;
-      background: #1c2745;
-      color: #d2d9ea;
+      background: var(--remove-bg);
+      color: #f4f6ff;
       font-weight: 700;
-      border: 1px solid #253154;
+      border: 1px solid var(--remove-border);
       transition: background 150ms ease, transform 150ms ease, border-color 150ms ease;
-      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+      box-shadow: none;
     }
 
     .remove-btn:hover {
-      background: rgba(222, 68, 55, 0.18);
-      border-color: var(--red-500);
+      background: var(--remove-hover-bg);
+      border-color: var(--remove-hover-border);
       transform: translateY(-1px);
     }
 
@@ -403,14 +447,12 @@
     <header class="header">
       <div class="toolbar">
         <div class="brand" aria-label="Browser extensions">
-          <img src="./assets/images/logo.svg" alt="">
+          <img src="./assets/images/logo.svg" alt="Extensions logo">
           <span>Extensions</span>
         </div>
         <div class="spacer"></div>
-        <button class="gear-btn" type="button" aria-label="Settings">
-          <svg class="gear-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none">
-            <path fill="currentColor" d="M11.53 2.08c.3-.1.64-.1.94 0l1.2.4c.45.15.74.58.7 1.05l-.08 1.26c-.02.24.05.48.2.67l.84 1.09c.17.22.43.36.7.38l1.3.1c.48.04.88.36 1.02.82l.36 1.24c.09.3.05.63-.1.9l-.64 1.14c-.12.21-.14.47-.06.7l.42 1.22c.15.45-.02.95-.42 1.23l-1.05.78c-.2.15-.33.38-.36.63l-.17 1.29c-.06.48-.43.87-.91.96l-1.26.24c-.24.05-.47.17-.62.35l-.86 1.04c-.31.37-.84.47-1.27.25l-1.16-.6c-.22-.11-.48-.13-.72-.06l-1.24.36c-.47.14-.97-.06-1.22-.48l-.64-1.13c-.12-.2-.31-.35-.54-.42l-1.24-.37c-.46-.13-.78-.54-.8-1.02l-.06-1.29c-.01-.25-.12-.49-.3-.67l-.92-.94c-.35-.36-.43-.9-.2-1.34l.6-1.16c.1-.22.12-.48.04-.71l-.42-1.22c-.15-.45.02-.95.42-1.23l1.05-.78c.2-.15.33-.38.36-.63l.17-1.29c.06-.48.43-.87.91-.96l1.26-.24c.24-.05.47-.17.62-.35l.86-1.04c.31-.37.84-.47 1.27-.25l1.16.6c.22.11.48.13.72.06l1.24-.36zm.47 6.92a3 3 0 100 6 3 3 0 000-6z"/>
-          </svg>
+        <button class="gear-btn" type="button" aria-label="Toggle theme">
+          <img src="./assets/images/icon-sun.svg" alt="" aria-hidden="true">
         </button>
       </div>
     </header>
@@ -439,14 +481,16 @@
     const extensionsListEl = document.getElementById("extensionsList");
     const filterButtons = document.querySelectorAll(".filter-btn");
     const emptyState = document.getElementById("emptyState");
+    const themeToggle = document.querySelector(".gear-btn");
 
   const state = {
     items: [],
     filter: "all",
-    theme: "dark",
+    theme: localStorage.getItem("bem-theme") || "dark",
   };
 
     document.body.dataset.theme = state.theme;
+    updateThemeToggle();
 
     fetch("./data.json")
       .then((res) => res.json())
@@ -457,6 +501,13 @@
     .catch(() => {
       emptyState.textContent = "Unable to load extensions data.";
       emptyState.hidden = false;
+    });
+
+    themeToggle.addEventListener("click", () => {
+      state.theme = state.theme === "dark" ? "light" : "dark";
+      document.body.dataset.theme = state.theme;
+      localStorage.setItem("bem-theme", state.theme);
+      updateThemeToggle();
     });
 
     filterButtons.forEach((btn) => {
@@ -499,6 +550,13 @@
 
     function render() {
       renderList();
+    }
+
+    function updateThemeToggle() {
+      const isDark = state.theme === "dark";
+      const icon = isDark ? "./assets/images/icon-sun.svg" : "./assets/images/icon-moon.svg";
+      themeToggle.querySelector("img").src = icon;
+      themeToggle.setAttribute("aria-pressed", (!isDark).toString());
     }
 
     function renderList() {

@@ -11,7 +11,7 @@ Responsive browser extensions dashboard built from the Frontend Mentor challenge
 
 ### Screenshot
 
-![Screenshot of the implemented UI](./preview.jpg)
+![Screenshot of the implemented UI](./assets/images/screenshot3.png)
 
 ### Links
 
