@@ -1,0 +1,5 @@
+# Ignore provided sample assets and templates
+design/
+preview.jpg
+README-template.md
+assets/images/screenshot.png
