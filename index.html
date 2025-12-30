@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>Browser Extensions Manager</title>
+  <style>
+    :root {
+      --neutral-900: hsl(227, 75%, 14%);
+      --neutral-800: hsl(226, 25%, 17%);
+      --neutral-700: hsl(225, 23%, 24%);
+      --neutral-600: hsl(226, 11%, 37%);
+      --neutral-300: hsl(0, 0%, 78%);
+      --neutral-200: hsl(217, 61%, 90%);
+      --neutral-100: hsl(0, 0%, 93%);
+      --neutral-0: hsl(200, 60%, 99%);
+      --red-400: hsl(3, 86%, 64%);
+      --red-500: hsl(3, 71%, 56%);
+      --red-700: hsl(3, 77%, 44%);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans", system-ui, -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      transition: background 250ms ease, color 200ms ease;
+    }
+
+    body[data-theme="light"] {
+      --bg-gradient: linear-gradient(180deg, #eef3fb 0%, #f4f9fa 100%);
+      --surface: #f9fbff;
+      --surface-muted: #f3f6fb;
+      --text-primary: var(--neutral-900);
+      --text-secondary: var(--neutral-600);
+      --border: var(--neutral-200);
+      --pill: #e3eaf5;
+      --switch-bg: #e4eaf3;
+      --shadow: 0 20px 60px rgba(14, 36, 71, 0.12);
+      --input-bg: #fff;
+      --search-border: var(--neutral-200);
+      --search-icon: var(--neutral-600);
+    }
+
+    body[data-theme="dark"] {
+      --bg-gradient: radial-gradient(120% 120% at 20% 0%, rgba(64, 98, 180, 0.35) 0%, rgba(8, 12, 26, 0.1) 40%), linear-gradient(180deg, #04091a 0%, #091435 100%);
+      --surface: #0e162c;
+      --surface-muted: #111a33;
+      --text-primary: var(--neutral-0);
+      --text-secondary: var(--neutral-300);
+      --border: var(--neutral-700);
+      --pill: #1a2748;
+      --switch-bg: #1d2a4a;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+      --input-bg: #0c1327;
+      --search-border: #111b36;
+      --search-icon: var(--neutral-200);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button {
+      font: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 20px 80px;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 26px;
+    }
+
+    .toolbar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: #1b2442;
+      border: 1px solid #233057;
+      box-shadow: inset 0 -2px 8px rgba(0,0,0,0.25), 0 18px 36px rgba(0,0,0,0.4);
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #cdd5e6;
+      font-weight: 700;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .toolbar .spacer {
+      flex: 1;
+    }
+
+    .gear-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid #2b3658;
+      background: #131c34;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 -2px 6px rgba(0,0,0,0.35);
+      color: #cbd3e6;
+    }
+
+    .gear-btn img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .theme-toggle:focus-visible,
+    .filter-btn:focus-visible,
+    .chip:focus-visible,
+    .remove-btn:focus-visible {
+      outline: 3px solid var(--red-400);
+      outline-offset: 2px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 22px 20px 26px;
+      border: 1px solid #142040;
+      box-shadow: 0 28px 50px rgba(0, 0, 0, 0.45);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    h1 {
+      margin: 4px 0 0;
+      font-size: 26px;
+      letter-spacing: -0.01em;
+    }
+
+    .filters {
+      display: inline-flex;
+      background: var(--surface-muted);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 6px;
+      border: 1px solid #202b4b;
+      box-shadow: inset 0 -2px 6px rgba(0,0,0,0.25);
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .filter-btn:hover {
+      color: var(--text-primary);
+      background: var(--pill);
+    }
+
+    .filter-btn.is-active {
+      background: #ec6b5f;
+      color: #fff;
+      box-shadow: 0 12px 20px rgba(236, 107, 95, 0.35);
+    }
+
+    .card-top + .extensions {
+      margin-top: 6px;
+    }
+
+    .extensions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 12px;
+    }
+
+    .extension {
+      background: #243157;
+      border-radius: 12px;
+      border: 1px solid #2e3b63;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+      box-shadow: inset 0 -2px 6px rgba(0,0,0,0.08);
+    }
+
+    .extension:hover {
+      transform: translateY(-2px);
+      border-color: var(--pill);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .extension-info {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .extension img.logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .name {
+      font-weight: 700;
+      font-size: 16px;
+      color: #eef2ff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .description {
+      margin: 0;
+      color: #cbd3e6;
+      line-height: 1.5;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .switch {
+      position: relative;
+      width: 58px;
+      height: 30px;
+      border-radius: 999px;
+      background: #2b344a;
+      border: 1px solid #2f3850;
+      transition: background 150ms ease, border-color 150ms ease;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.35);
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #f4f7ff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 -2px 2px rgba(0,0,0,0.08);
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    .switch.is-on {
+      background: #ec6b5f;
+      border-color: #ec6b5f;
+    }
+
+    .switch.is-on::after {
+      transform: translateX(26px);
+    }
+
+    .switch-label {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      color: transparent;
+    }
+
+    .remove-btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: #1c2745;
+      color: #d2d9ea;
+      font-weight: 700;
+      border: 1px solid #253154;
+      transition: background 150ms ease, transform 150ms ease, border-color 150ms ease;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+    }
+
+    .remove-btn:hover {
+      background: rgba(222, 68, 55, 0.18);
+      border-color: var(--red-500);
+      transform: translateY(-1px);
+    }
+
+    .empty {
+      margin: 30px 0 10px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .card-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 20px 16px;
+      }
+
+      .extension {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .controls {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .brand {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+    <div class="page">
+    <header class="header">
+      <div class="toolbar">
+        <div class="brand" aria-label="Browser extensions">
+          <img src="./assets/images/logo.svg" alt="">
+          <span>Extensions</span>
+        </div>
+        <div class="spacer"></div>
+        <button class="gear-btn" type="button" aria-label="Settings">
+          <svg class="gear-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+            <path fill="currentColor" d="M11.53 2.08c.3-.1.64-.1.94 0l1.2.4c.45.15.74.58.7 1.05l-.08 1.26c-.02.24.05.48.2.67l.84 1.09c.17.22.43.36.7.38l1.3.1c.48.04.88.36 1.02.82l.36 1.24c.09.3.05.63-.1.9l-.64 1.14c-.12.21-.14.47-.06.7l.42 1.22c.15.45-.02.95-.42 1.23l-1.05.78c-.2.15-.33.38-.36.63l-.17 1.29c-.06.48-.43.87-.91.96l-1.26.24c-.24.05-.47.17-.62.35l-.86 1.04c-.31.37-.84.47-1.27.25l-1.16-.6c-.22-.11-.48-.13-.72-.06l-1.24.36c-.47.14-.97-.06-1.22-.48l-.64-1.13c-.12-.2-.31-.35-.54-.42l-1.24-.37c-.46-.13-.78-.54-.8-1.02l-.06-1.29c-.01-.25-.12-.49-.3-.67l-.92-.94c-.35-.36-.43-.9-.2-1.34l.6-1.16c.1-.22.12-.48.04-.71l-.42-1.22c-.15-.45.02-.95.42-1.23l1.05-.78c.2-.15.33-.38.36-.63l.17-1.29c.06-.48.43-.87.91-.96l1.26-.24c.24-.05.47-.17.62-.35l.86-1.04c.31-.37.84-.47 1.27-.25l1.16.6c.22.11.48.13.72.06l1.24-.36zm.47 6.92a3 3 0 100 6 3 3 0 000-6z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="card">
+      <div class="card-top">
+        <div>
+          <p class="eyebrow">Extensions List</p>
+          <h1>Extensions List</h1>
+        </div>
+        <div class="filters" role="tablist" aria-label="Filter extensions by status">
+          <button class="filter-btn is-active" data-filter="all" role="tab" aria-selected="true" aria-controls="extensionsList">All</button>
+          <button class="filter-btn" data-filter="active" role="tab" aria-selected="false" aria-controls="extensionsList">Active</button>
+          <button class="filter-btn" data-filter="inactive" role="tab" aria-selected="false" aria-controls="extensionsList">Inactive</button>
+        </div>
+      </div>
+
+      <ul class="extensions" id="extensionsList" aria-live="polite">
+        <!-- Extensions injected via JS -->
+      </ul>
+      <p class="empty" id="emptyState" hidden>No extensions match this filter.</p>
+    </main>
+  </div>
+
+  <script>
+    const extensionsListEl = document.getElementById("extensionsList");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const emptyState = document.getElementById("emptyState");
+
+  const state = {
+    items: [],
+    filter: "all",
+    theme: "dark",
+  };
+
+    document.body.dataset.theme = state.theme;
+
+    fetch("./data.json")
+      .then((res) => res.json())
+      .then((data) => {
+        state.items = data.map((item, index) => ({ id: index + 1, ...item }));
+        render();
+      })
+    .catch(() => {
+      emptyState.textContent = "Unable to load extensions data.";
+      emptyState.hidden = false;
+    });
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.filter = btn.dataset.filter;
+        filterButtons.forEach((b) => {
+          b.classList.toggle("is-active", b === btn);
+          b.setAttribute("aria-selected", b === btn ? "true" : "false");
+        });
+        renderList();
+      });
+    });
+
+    extensionsListEl.addEventListener("click", (event) => {
+      const toggle = event.target.closest("[data-action='toggle']");
+      const remove = event.target.closest("[data-action='remove']");
+      const itemId = event.target.closest("[data-id]")?.dataset.id;
+      if (!itemId) return;
+
+      if (toggle) {
+        toggleExtension(Number(itemId));
+      }
+
+      if (remove) {
+        removeExtension(Number(itemId));
+      }
+    });
+
+    function toggleExtension(id) {
+      state.items = state.items.map((item) =>
+        item.id === id ? { ...item, isActive: !item.isActive } : item
+      );
+      render();
+    }
+
+    function removeExtension(id) {
+      state.items = state.items.filter((item) => item.id !== id);
+      render();
+    }
+
+    function render() {
+      renderList();
+    }
+
+    function renderList() {
+      const filtered = state.items.filter((item) => {
+        if (state.filter === "active") return item.isActive;
+        if (state.filter === "inactive") return !item.isActive;
+        return true;
+      });
+
+      emptyState.hidden = filtered.length > 0;
+      extensionsListEl.innerHTML = filtered
+        .map((item) => createExtensionMarkup(item))
+        .join("");
+    }
+
+    function createExtensionMarkup(item) {
+      const statusClass = item.isActive ? "is-active" : "is-inactive";
+      const switchClass = item.isActive ? "switch is-on" : "switch is-off";
+      const statusLabel = item.isActive ? "Active" : "Inactive";
+      return `
+        <li class="extension" data-id="${item.id}">
+          <div class="extension-info">
+            <img class="logo" src="${item.logo}" alt="${item.name} logo">
+            <div class="text-block">
+              <div class="title-row">
+                <span class="name">${item.name}</span>
+              </div>
+              <p class="description">${item.description}</p>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="${switchClass}" data-action="toggle" aria-pressed="${item.isActive}" aria-label="Toggle ${item.name} ${statusLabel}">
+              <span class="switch-label">${statusLabel}</span>
+            </button>
+            <button class="remove-btn" data-action="remove" type="button">Remove</button>
+          </div>
+        </li>
+      `;
+    }
+  </script>
+</body>
+</html>
